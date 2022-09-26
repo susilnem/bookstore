@@ -1,4 +1,6 @@
+//connection with mysql using sequelize
 import { Sequelize } from "sequelize";
+//dotnev to access .env data
 import "dotenv/config";
 
 export default new Sequelize(

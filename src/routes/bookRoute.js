@@ -1,7 +1,6 @@
 import express from "express";
-import bookModel from "../models/bookModel.js";
 import multer from "multer";
-
+import BookController from "../controllers/bookController.js";
 const router = express.Router();
 
 //for image field
@@ -21,13 +20,22 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
-
-router.post("/add", upload.single("image"), async (req, res) => {
-  const data = await bookModel.create({ ...req.body, image: imagename });
-  if (data) {
-    res.json(data);
-  } else res.json({ success: false, message: "error during adding" });
+//multer is used for image field
+const upload = multer({ storage });
+const bookController = new BookController();
+//for adding book
+router.post("/add", upload.single("image"), (req, res) => {
+  bookController.addBook(req, res, imagename);
 });
 
+//for getting book lsit
+router.get("/", bookController.getBookList);
+//for getting book by id
+router.get("/:id", bookController.getBookByID);
+
+//for update book
+router.put("/update/:id", bookController.updateBook);
+
+//for delete book
+router.delete("/delete/:id", bookController.deleteBook);
 export default router;
