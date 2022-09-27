@@ -1,17 +1,19 @@
 import bookModel from "../models/bookModel.js";
-
+import { Op } from "sequelize";
 export default class BookController {
   //insert data using post method
   async addBook(req, res, imagename) {
     const data = await bookModel.create({ ...req.body, image: imagename });
     if (data) {
       res.json(data);
-    } else res.json({ success: false, message: "error during adding" });
+    } else res.json({ success: false, message: "Error during adding" });
   }
 
   //get book list
   async getBookList(req, res) {
-    const data = await bookModel.findAll(req.body);
+    let { limit } = req.query;
+    if (!limit) limit = 10;
+    const data = await bookModel.findAll({ limit: parseInt(limit) });
     data ? res.json(data) : res.json([]);
   }
 
@@ -56,5 +58,33 @@ export default class BookController {
         res.json({ success: false, message: "couldnot delete book" });
       }
     } else res.json({ success: false, message: "Book id is not provided" });
+  }
+
+  //for searching book
+  async searchBook(req, res) {
+    const { q } = req.query;
+
+    if (q) {
+      const data = await bookModel.findAll({
+        where: {
+          [Op.or]: {
+            name: {
+              [Op.like]: `%${q}%`,
+            },
+            author: {
+              [Op.like]: `%${q}%`,
+            },
+            genre: {
+              [Op.like]: `%${q}%`,
+            },
+          },
+        },
+      });
+
+      console.log(data);
+      res.json(data);
+    } else {
+      res.json({ success: false, message: "Empty search string" });
+    }
   }
 }

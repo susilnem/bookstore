@@ -38,4 +38,8 @@ router.put("/update/:id", bookController.updateBook);
 
 //for delete book
 router.delete("/delete/:id", bookController.deleteBook);
+
+//searching book
+router.get("/search/all", bookController.searchBook);
+
 export default router;
