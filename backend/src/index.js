@@ -2,11 +2,12 @@ import express from "express";
 import connection from "./models/index.js";
 import bookRoute from "./routes/bookRoute.js";
 import "dotenv/config";
-
+import cors from "cors"; //this is for the anyone can access the api
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("banckend is working");
