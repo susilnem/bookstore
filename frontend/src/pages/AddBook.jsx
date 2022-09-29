@@ -10,12 +10,13 @@ const AddBook = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const addBook = async (e) => {
     e.preventDefault();
-
+    console.log("submitted");
     //now calling backend api for post method
     const response = await api.post(
-      "/book/add",
+      `/book/add`,
       {
         //formdata in ...formData, and image in imageData
         ...formData,
@@ -45,22 +46,21 @@ const AddBook = () => {
         onSubmit={addBook}
       >
         Name <input type="text" name="name" onChange={handleChange}></input>
-        Author{" "}
-        <input type="text" name="author " onChange={handleChange}></input>
+        Author <input type="text" name="author" onChange={handleChange}></input>
         Genre <input type="text" name="genre" onChange={handleChange}></input>
-        Description{" "}
+        Description
         <textarea
           name="description"
           rows="10"
           onChange={handleChange}
         ></textarea>
-        File upload{" "}
+        File upload
         <input
           type="file"
           name="image"
           onChange={(e) => setImageData(e.target.files[0])}
-        ></input>
-        <input type="submit" value="submit" name="save"></input>
+        />
+        <input type="submit" value="submit"></input>
       </form>
     </div>
   );
