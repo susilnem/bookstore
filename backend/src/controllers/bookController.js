@@ -14,6 +14,10 @@ export default class BookController {
     let { limit } = req.query;
     if (!limit) limit = 10;
     const data = await bookModel.findAll({ limit: parseInt(limit) });
+    for (let d of data) {
+      d.dataValues.image =
+        "http://localhost:8000/uploads/" + d.dataValues.image;
+    }
     data ? res.json(data) : res.json([]);
   }
 

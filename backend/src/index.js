@@ -8,6 +8,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+//for making the link of image to treat as a path not a url
+app.use(express.static("public"));
 
 app.get("/", (req, res) => {
   res.send("banckend is working");
