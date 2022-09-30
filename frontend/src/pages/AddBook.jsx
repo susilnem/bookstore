@@ -13,22 +13,33 @@ const AddBook = () => {
 
   const addBook = async (e) => {
     e.preventDefault();
-    console.log("submitted");
-    //now calling backend api for post method
-    const response = await api.post(
-      `/book/add`,
-      {
-        //formdata in ...formData, and image in imageData
-        ...formData,
-        image: imageData,
-      },
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
+    let response;
+    try {
+      //now calling backend api for post method
+      response = await api.post(
+        `/book/add`,
+        {
+          //formdata in ...formData, and image in imageData
+          ...formData,
+          image: imageData,
         },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      //for clearing data and image in text and state after successful insertion of data
+      if (response.data.id) {
+        e.target.reset();
+        setFormData({});
+        setImageData({});
+      } else {
+        console.log(response.data.message);
       }
-    );
-    console.log(response);
+    } catch (err) {
+      console.log(response.data.message);
+    }
   };
   return (
     <div
