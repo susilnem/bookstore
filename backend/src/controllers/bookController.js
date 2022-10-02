@@ -102,9 +102,11 @@ export default class BookController {
             },
           },
         },
+        raw: true,
       });
-
-      console.log(data);
+      for (let d of data) {
+        d.image = urlConstant.IMG_PATH_URL + d.image;
+      }
       res.json(data);
     } else {
       res.json({ success: false, message: "Empty search string" });

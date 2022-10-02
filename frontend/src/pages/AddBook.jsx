@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import "../assets/sass/form.scss";
 import api from "../api/config";
+//for displaying message and error
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddBook = () => {
   const [formData, setFormData] = useState({});
@@ -13,10 +16,9 @@ const AddBook = () => {
 
   const addBook = async (e) => {
     e.preventDefault();
-    let response;
     try {
       //now calling backend api for post method
-      response = await api.post(
+      const response = await api.post(
         `/book/add`,
         {
           //formdata in ...formData, and image in imageData
@@ -31,14 +33,17 @@ const AddBook = () => {
       );
       //for clearing data and image in text and state after successful insertion of data
       if (response.data.id) {
+        toast.success("Added New Book");
         e.target.reset();
         setFormData({});
         setImageData({});
       } else {
-        console.log(response.data.message);
+        // console.log(response.data.message);
+        //toast error to display
+        toast.error(response.data.message);
       }
     } catch (err) {
-      console.log(response.data.message);
+      toast.error(err.message);
     }
   };
   return (
@@ -49,6 +54,7 @@ const AddBook = () => {
         padding: "20px",
       }}
     >
+      <ToastContainer />
       <form
         style={{
           display: "flex",
