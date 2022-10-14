@@ -1,20 +1,40 @@
 import bookModel from "../models/bookModel.js";
 import { Op } from "sequelize";
+import textConstants from "../constants/textConstants.js";
+import urlConstant from "../constants/urlConstant.js";
 export default class BookController {
   //insert data using post method
   async addBook(req, res, imagename) {
-    const data = await bookModel.create({ ...req.body, image: imagename });
-    if (data) {
-      res.json(data);
-    } else res.json({ success: false, message: "Error during adding" });
+    try {
+      const data = await bookModel.create({ ...req.body, image: imagename });
+      if (data) {
+        res.json(data);
+      } else res.json({ success: false, message: "Error during adding" });
+    } catch (err) {
+      return res.json({
+        success: false,
+        message: "Error while Quering in Database",
+      });
+    }
   }
 
   //get book list
   async getBookList(req, res) {
     let { limit } = req.query;
     if (!limit) limit = 10;
-    const data = await bookModel.findAll({ limit: parseInt(limit) });
-    data ? res.json(data) : res.json([]);
+    //use try catch for error handling almost in every queryset
+    try {
+      const data = await bookModel.findAll({
+        limit: parseInt(limit),
+        raw: true,
+      });
+      for (let d of data) {
+        d.image = urlConstant.IMG_PATH_URL + d.image;
+      }
+      data ? res.json(data) : res.json([]);
+    } catch (err) {
+      res.json({ success: false, message: err });
+    }
   }
 
   //get book by id
@@ -24,7 +44,8 @@ export default class BookController {
       const data = await bookModel.findByPk(id);
       //if there is data then return data otherwise empty
       data ? res.json(data) : res.json([]);
-    } else res.json({ success: false, message: "Book id is not provided" });
+    } else
+      res.json({ success: false, message: textConstants.BOOK_ID_NOT_PROVIDED });
   }
 
   //updating the book
@@ -41,7 +62,8 @@ export default class BookController {
       } else {
         res.json({ success: false, message: "couldnot update book" });
       }
-    } else res.json({ success: false, message: "Book id is not provided" });
+    } else
+      res.json({ success: false, message: textConstants.BOOK_ID_NOT_PROVIDED });
   }
 
   //for delete the book
@@ -57,7 +79,8 @@ export default class BookController {
       } else {
         res.json({ success: false, message: "couldnot delete book" });
       }
-    } else res.json({ success: false, message: "Book id is not provided" });
+    } else
+      res.json({ success: false, message: textConstants.BOOK_ID_NOT_PROVIDED });
   }
 
   //for searching book
@@ -79,9 +102,11 @@ export default class BookController {
             },
           },
         },
+        raw: true,
       });
-
-      console.log(data);
+      for (let d of data) {
+        d.image = urlConstant.IMG_PATH_URL + d.image;
+      }
       res.json(data);
     } else {
       res.json({ success: false, message: "Empty search string" });
