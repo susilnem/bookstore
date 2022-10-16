@@ -4,7 +4,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export default class AuthController {
-  async authenticate(req, res) {
+  //login user
+  async login(req, res) {
     try {
       const response = await userModel.findOne({
         where: {
@@ -35,11 +36,21 @@ export default class AuthController {
   }
 
   //login user
-  async login(req, res) {
+  // async login(req, res) {
+  //   try {
+  //     const response = await userModel.findOne({ email: req.body.email });
+  //     if (!response) return res.json("email not found");
+  //     else return res.json(response);
+  //   } catch (err) {
+  //     res.json(err);
+  //   }
+  // }
+
+  //signup user
+  async signup(req, res) {
     try {
       const response = await userModel.create({ ...req.body });
-      if (response === null) return res.json([]);
-      else return res.json(response);
+      if (response) return res.json({ message: "User created Successfully" });
     } catch (err) {
       res.json(err);
     }

@@ -12,6 +12,7 @@ export default connection.define("users", {
   email: {
     type: DataTypes.STRING,
     unique: true,
+    allowNull: false,
     validate: {
       isEmail: {
         msg: "wrong format email",
@@ -23,6 +24,7 @@ export default connection.define("users", {
   },
   password: {
     type: DataTypes.TEXT,
+    allowNull: false,
     set(value) {
       console.log("value: " + value);
       //using bcrypt to hash the password while storing in database

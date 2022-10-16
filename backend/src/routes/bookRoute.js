@@ -35,11 +35,12 @@ router.post("/add", upload.single("image"), (req, res) => {
 router.get("/", validateToken, bookController.getBookList);
 
 //for authenticate
-router.post("/auth", authController.authenticate);
+// router.post("/auth", authController.authenticate);
 
 //for login user
 router.post("/login", authController.login);
-
+//register user
+router.post("/signup", authController.signup);
 //for userlist
 router.get("/userlist", validateToken, authController.userList);
 
